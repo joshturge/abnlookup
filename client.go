@@ -1,12 +1,14 @@
 package abnlookup
 
 import (
+	"bytes"
 	"encoding/xml"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -20,7 +22,7 @@ type Client struct {
 
 // NewClient will create a new instance of client with GUID provided
 func NewClient(guid string) (*Client, error) {
-	base, err := url.Parse("http://abr.business.gov.au/ABRXMLSearch/")
+	base, err := url.Parse("https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/")
 	if err != nil {
 		return nil, err
 	}
@@ -43,10 +45,9 @@ func (c *Client) SetTimeout(duration time.Duration) {
 
 // NewRequest creates a new request instance
 func (c *Client) NewRequest(path string, form url.Values) (*http.Request, error) {
-	ref := &url.URL{Path: path}
-	uri := c.BaseURL.ResolveReference(ref)
+	form.Add("authenticationGuid", c.GUID)
 
-	req, err := http.NewRequest("POST", uri.String(), strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s?%s", c.BaseURL.String(), path, form.Encode()), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -64,15 +65,24 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		c.logger.Printf("http.Client.Do: %s", err)
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	// TODO: Find a way to check for errors, status code is always set to 200 for some reason
+	if resp.StatusCode != 200 {
+		return resp, fmt.Errorf("client response status was not 200: Got %d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+	}
 
-	if err := xml.NewDecoder(resp.Body).Decode(v); err != nil {
-		c.logger.Printf("xml.Decoder.Decode: %s", err)
+	// This is definently not ideal for big response bodies but it's all I know at this point
+	// Get a copy of the response body as I need to have resp.Body available
+	bodyByte, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.Body = ioutil.NopCloser(bytes.NewBuffer(bodyByte))
+	body := bytes.NewReader(bodyByte)
+
+	if err = xml.NewDecoder(body).Decode(v); err != nil {
 		return nil, err
 	}
 
