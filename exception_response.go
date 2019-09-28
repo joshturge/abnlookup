@@ -18,7 +18,7 @@ type ExceptionResponse struct {
 	Exception               Exception `xml:"exception"`
 }
 
-type ABRPayloadSearchResultsException struct {
+type ABRPayloadException struct {
 	XMLName           xml.Name          `xml:"ABRPayloadSearchResults"`
 	Request           Request           `xml:"request"`
 	ExceptionResponse ExceptionResponse `xml:"response"`

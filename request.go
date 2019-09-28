@@ -31,12 +31,12 @@ func (c *Client) SearchByABN(abn string, history bool) (*ABRPayloadSearchResults
 
 	// If the usage statement isn't defined then there was probably an exception
 	if ABRPSR.Response.UsageStatement == "" {
-		var ABRPSRException ABRPayloadSearchResultsException
-		if err = xml.NewDecoder(resp.Body).Decode(&ABRPSRException); err != nil {
+		var ABRPException ABRPayloadException
+		if err = xml.NewDecoder(resp.Body).Decode(&ABRPException); err != nil {
 			return nil, fmt.Errorf("couldn't decode response body into ResponseException: %s", err)
 		}
 
-		return nil, fmt.Errorf(ABRPSRException.ExceptionResponse.Exception.String())
+		return nil, fmt.Errorf(ABRPException.ExceptionResponse.Exception.String())
 	}
 
 	return &ABRPSR, nil
