@@ -11,9 +11,8 @@ type Exception struct {
 }
 
 type ExceptionResponse struct {
-	XMLName        xml.Name `xml:"response"`
-	UsageStatement string   `xml:"usageStatement"`
-	// Both could cause an error whilst unmarshalling
+	XMLName                 xml.Name  `xml:"response"`
+	UsageStatement          string    `xml:"usageStatement"`
 	DateRegisterLastUpdated string    `xml:"dateRegisterLastUpdated"`
 	DateTimeRetrieved       string    `xml:"dateTimeRetrieved"`
 	Exception               Exception `xml:"exception"`
