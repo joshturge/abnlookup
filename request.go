@@ -6,7 +6,23 @@ import (
 	"net/url"
 )
 
+// SearchByABN will return a ABRPayload with search results for a specified ABN or will return an error
 func (c *Client) SearchByABN(abn string, history bool) (*ABRPayloadSearchResults, error) {
+	return c.searchBy("SearchByABNv201408", abn, history)
+}
+
+// SearchByASIC will return a ABRPayload with search results for a specified ASIC or return an error
+func (c *Client) SearchByASIC(asic string, history bool) (*ABRPayloadSearchResults, error) {
+	return c.searchBy("SearchByASICv201408", asic, history)
+}
+
+// searchBy will make a request to the ABN Lookup API and attempt to decode the response body
+// into a ABRPayloadSearchResults struct, if the Response UsageStatement is not set then this
+// function will then try to decode the response body into a ABRPayloadException struct and
+// return an error.
+func (c *Client) searchBy(searchType string, query string, history bool) (*ABRPayloadSearchResults, error) {
+	// The Lookup API requires a string for includeHistoricalDetails that can either be 'Y' or 'N'
+	// true == "Y", false == "N".
 	var includeHistory string
 	if history {
 		includeHistory = "Y"
@@ -14,29 +30,32 @@ func (c *Client) SearchByABN(abn string, history bool) (*ABRPayloadSearchResults
 		includeHistory = "N"
 	}
 
+	// Add url values
+	// NOTE: the authentication GUID is added in NewRequest for you
 	v := url.Values{}
-	v.Add("searchString", abn)
+	v.Add("searchString", query)
 	v.Add("includeHistoricalDetails", includeHistory)
 
-	req, err := c.NewRequest("SearchByABNv201408", v)
+	req, err := c.NewRequest(searchType, v)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't create new request: %s", err)
+		return nil, fmt.Errorf("couldn't create new request: %s", err.Error())
 	}
 
+	// Do the request and decode the response body into an ABRPayloadSearchResults struct
 	var ABRPSR ABRPayloadSearchResults
 	resp, err := c.Do(req, &ABRPSR)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
 	}
 
 	// If the usage statement isn't defined then there was probably an exception
 	if ABRPSR.Response.UsageStatement == "" {
 		var ABRPException ABRPayloadException
 		if err = xml.NewDecoder(resp.Body).Decode(&ABRPException); err != nil {
-			return nil, fmt.Errorf("couldn't decode response body into ResponseException: %s", err)
+			return nil, fmt.Errorf("couldn't decode response body into ABRPayloadException: %s", err)
 		}
 
-		return nil, fmt.Errorf(ABRPException.ExceptionResponse.Exception.String())
+		return nil, fmt.Errorf(ABRPException.Error())
 	}
 
 	return &ABRPSR, nil
