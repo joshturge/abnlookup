@@ -27,4 +27,8 @@ func main() {
 	} else {
 		fmt.Println("ACN is not valid")
 	}
+
+	date := results.Response.BusinessEntity.ABN[0].ReplacedFrom.String()
+
+	fmt.Printf("ABN Replaced From: %s\n", date)
 }
