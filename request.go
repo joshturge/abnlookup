@@ -7,13 +7,21 @@ import (
 )
 
 // SearchByABN will return a ABRPayload with search results for a specified ABN or will return an error
+// Also does a validity check on the provided ABN
 func (c *Client) SearchByABN(abn string, history bool) (*ABRPayloadSearchResults, error) {
-	return c.searchBy("SearchByABNv201408", abn, history)
+	if ValidateABN(abn) {
+		return c.searchBy("SearchByABNv201408", abn, history)
+	}
+	return nil, fmt.Errorf("ABN provided is not valid")
 }
 
 // SearchByASIC will return a ABRPayload with search results for a specified ASIC or return an error
 func (c *Client) SearchByASIC(asic string, history bool) (*ABRPayloadSearchResults, error) {
-	return c.searchBy("SearchByASICv201408", asic, history)
+	if ValidateACN(asic) {
+		return c.searchBy("SearchByASICv201408", asic, history)
+	}
+
+	return nil, fmt.Errorf("ASIC provided is not valid")
 }
 
 // searchBy will make a request to the ABN Lookup API and attempt to decode the response body
