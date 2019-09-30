@@ -2,8 +2,6 @@ package abnlookup
 
 import (
 	"fmt"
-
-	xmldatetime "github.com/datainq/xml-date-time"
 )
 
 // Exception describes an exception and provides an exception code.
@@ -17,10 +15,23 @@ type Exception struct {
 // ExceptionResponse is a response received from the API that has
 // an Exception tag
 type ExceptionResponse struct {
-	UsageStatement          string                 `xml:"usageStatement"`
-	DateRegisterLastUpdated xmldatetime.CustomTime `xml:"dateRegisterLastUpdated"`
-	DateTimeRetrieved       xmldatetime.CustomTime `xml:"dateTimeRetrieved"`
-	Exception               Exception              `xml:"exception"`
+	UsageStatement          string    `xml:"usageStatement"`
+	DateRegisterLastUpdated string    `xml:"dateRegisterLastUpdated"`
+	DateTimeRetrieved       string    `xml:"dateTimeRetrieved"`
+	Exception               Exception `xml:"exception"`
+}
+
+// IdentifierSearchRequest holds information about the data wanting to be queried
+type IdentifierSearchRequest struct {
+	AuthenticationGUID string `xml:"authenticationGUID"`
+	IdentiferType      string `xml:"identifierType"`
+	IdentiferValue     string `xml:"identifierValue"`
+	History            string `xml:"history"`
+}
+
+// Request holds information about the search request
+type Request struct {
+	IdentifierSearchRequest IdentifierSearchRequest `xml:"identifierSearchRequest"`
 }
 
 // ABRPayloadException holds a Request and an ExceptionResponse
