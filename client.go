@@ -65,10 +65,6 @@ func (c *Client) NewRequest(path string, urlVal url.Values) (*http.Request, erro
 		return nil, err
 	}
 
-	// Redundant?
-	/* req.PostForm = form
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded") */
-
 	req.Header.Set("Host", "abr.business.gov.au")
 
 	return req, nil
