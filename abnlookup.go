@@ -47,10 +47,10 @@ func ValidateACN(acn string) bool {
 	acnWeightingSum := calcWeightingSum("ACN", acn)
 
 	// Convert the given check to int
-	givenCheck, err := strconv.Atoi(acn[7:8])
+	givenCheck, err := strconv.Atoi(acn[8:9])
 	if err != nil {
 		// Something went horribly wrong if we reach an error here
-		panic(fmt.Sprintf("string must contain a non-numeric value: %s error: %s", acn[7:8], err.Error()))
+		panic(fmt.Sprintf("string must contain a non-numeric value: %s error: %s", acn[8:9], err.Error()))
 	}
 
 	// Calculate the check digit
