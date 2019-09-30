@@ -12,6 +12,11 @@ type Exception struct {
 	Code        string `xml:"exceptionCode"`
 }
 
+// Error will return a formatted string with information about an API exception
+func (e *Exception) Error() string {
+	return fmt.Sprintf("exception code: %s description: %s", e.Code, e.Description)
+}
+
 // ExceptionResponse is a response received from the API that has
 // an Exception tag
 type ExceptionResponse struct {
@@ -25,9 +30,4 @@ type ExceptionResponse struct {
 // which holds information on a request
 type ABRPayloadException struct {
 	ExceptionResponse ExceptionResponse `xml:"response"`
-}
-
-// Error will return a formatted string with information about an API exception
-func (abrpe *ABRPayloadException) Error() string {
-	return fmt.Sprintf("exception code: %s description: %s", abrpe.ExceptionResponse.Exception.Code, abrpe.ExceptionResponse.Exception.Description)
 }

@@ -63,7 +63,7 @@ func (c *Client) searchBy(searchType string, query string, history bool) (*ABRPa
 			return nil, fmt.Errorf("couldn't decode response body into ABRPayloadException: %s", err)
 		}
 
-		return nil, fmt.Errorf(ABRPException.Error())
+		return nil, fmt.Errorf(ABRPException.ExceptionResponse.Exception.Error())
 	}
 
 	return &ABRPBR, nil
