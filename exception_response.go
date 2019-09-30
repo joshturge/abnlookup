@@ -1,7 +1,6 @@
 package abnlookup
 
 import (
-	"encoding/xml"
 	"fmt"
 )
 
@@ -16,7 +15,6 @@ type Exception struct {
 // ExceptionResponse is a response received from the API that has
 // an Exception tag
 type ExceptionResponse struct {
-	XMLName                 xml.Name  `xml:"response"`
 	UsageStatement          string    `xml:"usageStatement"`
 	DateRegisterLastUpdated string    `xml:"dateRegisterLastUpdated"`
 	DateTimeRetrieved       string    `xml:"dateTimeRetrieved"`
@@ -26,7 +24,6 @@ type ExceptionResponse struct {
 // ABRPayloadException holds a Request and an ExceptionResponse
 // which holds information on a request
 type ABRPayloadException struct {
-	XMLName           xml.Name          `xml:"ABRPayloadSearchResults"`
 	Request           Request           `xml:"request"`
 	ExceptionResponse ExceptionResponse `xml:"response"`
 }
