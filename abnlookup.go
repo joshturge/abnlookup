@@ -3,7 +3,6 @@ package abnlookup
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 )
 
 // ABN and ACN weights used to calculate weighting sums
@@ -14,7 +13,7 @@ var (
 
 // ValidateABN will check if an ABN is valid.
 // For more information on how this works you can
-// refer to: http://mathgen.ch/codes/abn.html
+// refer to: https://abr.business.gov.au/Help/AbnFormat
 func ValidateABN(abn string) bool {
 	// Remove all non-integer characters from the ABN
 	abn = cleanNumericString(abn)
@@ -36,6 +35,7 @@ func ValidateABN(abn string) bool {
 }
 
 // ValidateACN will check if an ACN is valid.
+// For more details refer to: https://asic.gov.au/for-business/registering-a-company/steps-to-register-a-company/australian-company-numbers/australian-company-number-digit-check/
 func ValidateACN(acn string) bool {
 	// Remove all non-integer characters from the ACN
 	acn = cleanNumericString(acn)
@@ -47,11 +47,7 @@ func ValidateACN(acn string) bool {
 	acnWeightingSum := calcWeightingSum("ACN", acn)
 
 	// Convert the given check digit to int
-	givenCheck, err := strconv.Atoi(acn[8:9])
-	if err != nil {
-		// Something went horribly wrong if we reach an error here
-		panic(fmt.Sprintf("string must contain a non-numeric value: %s error: %s", acn[8:9], err.Error()))
-	}
+	givenCheck := int(acn[8]) - 48
 
 	// Calculate the check digit
 	calcCheck := (10 - (acnWeightingSum % 10)) % 10
@@ -83,13 +79,8 @@ func calcWeightingSum(validationType string, str string) int {
 
 	var weightingSum int
 	var num int
-	var err error
 	for i := 0; i <= len(weights)-1; i++ {
-		num, err = strconv.Atoi(string(str[i]))
-		if err != nil {
-			// Something went horribly wrong if we reach an error here
-			panic(fmt.Sprintf("string must contain a non-numeric value: %s error: %s", str, err.Error()))
-		}
+		num = int(str[i]) - 48
 		weightingSum += num * weights[i]
 	}
 
