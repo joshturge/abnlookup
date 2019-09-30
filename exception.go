@@ -21,23 +21,9 @@ type ExceptionResponse struct {
 	Exception               Exception `xml:"exception"`
 }
 
-// IdentifierSearchRequest holds information about the data wanting to be queried
-type IdentifierSearchRequest struct {
-	AuthenticationGUID string `xml:"authenticationGUID"`
-	IdentiferType      string `xml:"identifierType"`
-	IdentiferValue     string `xml:"identifierValue"`
-	History            string `xml:"history"`
-}
-
-// Request holds information about the search request
-type Request struct {
-	IdentifierSearchRequest IdentifierSearchRequest `xml:"identifierSearchRequest"`
-}
-
 // ABRPayloadException holds a Request and an ExceptionResponse
 // which holds information on a request
 type ABRPayloadException struct {
-	Request           Request           `xml:"request"`
 	ExceptionResponse ExceptionResponse `xml:"response"`
 }
 
