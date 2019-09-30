@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	abnlookup "github.com/joshturge/ABN-Lookup-Go"
+	"github.com/joshturge/abnlookup"
 )
 
 func main() {
