@@ -2,6 +2,8 @@ package abnlookup
 
 import (
 	"fmt"
+
+	xmldatetime "github.com/datainq/xml-date-time"
 )
 
 // Exception describes an exception and provides an exception code.
@@ -15,10 +17,10 @@ type Exception struct {
 // ExceptionResponse is a response received from the API that has
 // an Exception tag
 type ExceptionResponse struct {
-	UsageStatement          string    `xml:"usageStatement"`
-	DateRegisterLastUpdated string    `xml:"dateRegisterLastUpdated"`
-	DateTimeRetrieved       string    `xml:"dateTimeRetrieved"`
-	Exception               Exception `xml:"exception"`
+	UsageStatement          string                 `xml:"usageStatement"`
+	DateRegisterLastUpdated xmldatetime.CustomTime `xml:"dateRegisterLastUpdated"`
+	DateTimeRetrieved       xmldatetime.CustomTime `xml:"dateTimeRetrieved"`
+	Exception               Exception              `xml:"exception"`
 }
 
 // ABRPayloadException holds a Request and an ExceptionResponse
