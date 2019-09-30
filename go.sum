@@ -1,2 +1,4 @@
+github.com/datainq/xml-date-time v0.0.0-20170820214645-2292f08baa38 h1:cUoduvNB9/JFJYEVeKy2hX/R5qyg2uwnHVhXCIjhBeI=
+github.com/datainq/xml-date-time v0.0.0-20170820214645-2292f08baa38/go.mod h1:a0PnbhSGmzFMGx9KdEqfEdDHoEwTF9KLNbKLcWD8kAo=
 github.com/joshturge/ABN-Lookup-Go v0.0.0-20190930040035-0e499211ad69 h1:/XwqthTCHDq8UTlzJcWWVVvo2KmMogpSKUgG7ZWBoas=
 github.com/joshturge/ABN-Lookup-Go v0.0.0-20190930040035-0e499211ad69/go.mod h1:XRwXIazkKuaQrOzDGLYXJeJehuiUJ6dYfF/HDFP26+o=
