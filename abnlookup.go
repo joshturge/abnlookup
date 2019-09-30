@@ -46,7 +46,7 @@ func ValidateACN(acn string) bool {
 
 	acnWeightingSum := calcWeightingSum("ACN", acn)
 
-	// Convert the given check to int
+	// Convert the given check digit to int
 	givenCheck, err := strconv.Atoi(acn[8:9])
 	if err != nil {
 		// Something went horribly wrong if we reach an error here
