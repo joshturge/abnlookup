@@ -14,15 +14,15 @@ type ABN struct {
 
 // EntityStatus holds information on an Entities current status
 type EntityStatus struct {
-	EntityStatusCode string `xml:"entityStatusCode"`
-	EffectiveFrom    string `xml:"effectiveFrom"`
-	EffectiveTo      string `xml:"effectiveTo"`
+	StatusCode    string `xml:"entityStatusCode"`
+	EffectiveFrom string `xml:"effectiveFrom"`
+	EffectiveTo   string `xml:"effectiveTo"`
 }
 
 // EntityType holds information on an Entity
 type EntityType struct {
-	EntityTypeCode    string `xml:"entityTypeCode"`
-	EntityDescription string `xml:"entityDescription"`
+	Code        string `xml:"entityTypeCode"`
+	Description string `xml:"entityDescription"`
 }
 
 // GoodsAndServicesTax holds the effectiveness a GoodsAndServicesTax
@@ -70,9 +70,9 @@ type MainBusinessPhysicalAddress struct {
 
 // CharityType holds a information about a charity
 type CharityType struct {
-	CharityTypeDescription string `xml:"charityTypeDescription"`
-	EffectiveFrom          string `xml:"effectiveFrom"`
-	EffectiveTo            string `xml:"effectiveTo"`
+	Description   string `xml:"charityTypeDescription"`
+	EffectiveFrom string `xml:"effectiveFrom"`
+	EffectiveTo   string `xml:"effectiveTo"`
 }
 
 // TaxConcessionCharityEndorsement holds information about an endoresment type
@@ -131,17 +131,17 @@ type BusinessEntity struct {
 	XMLName xml.Name `xml:"businessEntity201408"`
 
 	RecordLastUpdatedDate               string                                 `xml:"recordLastUpdatedDate"`
-	ABN                                 []ABN                                  `xml:"ABN"`
-	EntityStatus                        []EntityStatus                         `xml:"entityStatus"`
+	ABN                                 []*ABN                                 `xml:"ABN"`
+	EntityStatus                        []*EntityStatus                        `xml:"entityStatus"`
 	ASICNumber                          string                                 `xml:"ASICNumber,omitempty"`
-	EntityType                          *EntityType                            `xml:"entityType,omitempty"`
+	EntityType                          EntityType                             `xml:"entityType,omitempty"`
 	GoodsAndServicesTax                 []*GoodsAndServicesTax                 `xml:"goodsAndServicesTax,omitempty"`
 	DGREndorsement                      []*DGREndorsement                      `xml:"dgrEndorsement,omitempty"`
 	LegalName                           []*LegalName                           `xml:"legalName,omitempty"`
 	MainName                            []*MainName                            `xml:"mainName,omitempty"`
 	MainTradingName                     []*MainTradingName                     `xml:"mainTradingName,omitempty"`
-	MainBusinessPhysicalAddress         []MainBusinessPhysicalAddress          `xml:"mainBusinessPhysicalAddress"`
-	CharityType                         *CharityType                           `xml:"charityType,omitempty"`
+	MainBusinessPhysicalAddress         []*MainBusinessPhysicalAddress         `xml:"mainBusinessPhysicalAddress"`
+	CharityType                         CharityType                            `xml:"charityType,omitempty"`
 	TaxConcessionCharityEndorsement     []*TaxConcessionCharityEndorsement     `xml:"taxConcessionCharityEndorsement,omitempty"`
 	PublicBenevolentInstitutionEmployer []*PublicBenevolentInstitutionEmployer `xml:"publicBenevolentInstitutionEmployer,omitempty"`
 	BusinessName                        []*BusinessName                        `xml:"businessName,omitempty"`
