@@ -56,6 +56,7 @@ func ValidateACN(acn string) bool {
 
 }
 
+// cleanNumericString will remove all non-integer characters from a string
 func cleanNumericString(str string) string {
 	// Make a regexp that only allows numbers
 	reg, err := regexp.Compile("[^0-9]+")
@@ -68,6 +69,7 @@ func cleanNumericString(str string) string {
 	return reg.ReplaceAllString(str, "")
 }
 
+// calcWeightingSum will calculate the weighting sum for either an ABN or ACN
 func calcWeightingSum(validationType string, str string) int {
 	var weights []int
 	switch validationType {
