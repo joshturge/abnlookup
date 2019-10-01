@@ -48,4 +48,19 @@ func main() {
 	}
 
 	fmt.Println(personResults.PersonEntityResponse.SearchResults.PersonEntity[0].ABN.IdentiferValue)
+
+	abnStatusQuery := abnlookup.ABNStatusQuery{
+		Postcode:                   "4159",
+		ActiveABNsOnly:             true,
+		CurrentGSTRegistrationOnly: true,
+		EntityTypeCode:             "PRV",
+	}
+
+	abnListResults, err := client.SearchByABNStatus(abnStatusQuery)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("ABNList result: %s\n", abnListResults.ABNEntityResponse.ABNResults.ABNList[0])
 }
