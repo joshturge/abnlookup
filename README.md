@@ -17,7 +17,7 @@ With the client created you can then use the search methods. Examples can be fou
 ## Methods
 
 | Method | Unit Tested |
-| --- | --- | --- |
+| --- | --- |
 | [SearchByABNv201408](https://abr.business.gov.au/abrxmlsearch/Forms/SearchByABNv201408.aspx) | No | 
 | [SearchByASICv201408](https://abr.business.gov.au/abrxmlsearch/Forms/SearchByASICv201408.aspx) | No |
 | [ABRSearchByNameAdvancedSimpleProtocol2017](https://abr.business.gov.au/abrxmlsearch/Forms/ABRSearchByNameAdvancedSimpleProtocol2017.aspx) | No |
