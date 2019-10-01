@@ -84,6 +84,7 @@ type NameQuery struct {
 	MaxResults     int
 }
 
+// SearchByName allows you to lookup an ABN/s via a name
 func (c *Client) SearchByName(nq NameQuery) (*ABRPayloadPersonResults, error) {
 	v := url.Values{}
 	v.Add("name", nq.Name)
@@ -121,6 +122,40 @@ func (c *Client) SearchByName(nq NameQuery) (*ABRPayloadPersonResults, error) {
 	}
 
 	return &ABRPPR, nil
+}
+
+// ABNStatusQuery holds fields for a ABNStatus query
+type ABNStatusQuery struct {
+	Postcode                   string
+	ActiveABNsOnly             bool
+	CurrentGSTRegistrationOnly bool
+	EntityTypeCode             string
+}
+
+// SearchByABNStatus allows you to search for ABN/s via ABN Status
+func (c *Client) SearchByABNStatus(asq ABNStatusQuery) (*ABRPayloadABNResults, error) {
+	v := url.Values{}
+	v.Add("postcode", asq.Postcode)
+	v.Add("activeABNsOnly", returnYorNString(asq.ActiveABNsOnly))
+	v.Add("currentGSTRegistrationOnly", returnYorNString(asq.CurrentGSTRegistrationOnly))
+	v.Add("entityTypeCode", asq.EntityTypeCode)
+
+	req, err := c.NewRequest("SearchByABNStatus", v)
+	if err != nil {
+		return nil, fmt.Errorf("couldn't create new request: %s", err.Error())
+	}
+
+	var ABRPABNR ABRPayloadABNResults
+	resp, err := c.Do(req, &ABRPABNR)
+	if err != nil {
+		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
+	}
+
+	if err = checkExceptionResponse(resp, &ABRPABNR.ABNEntityResponse); err != nil {
+		return nil, err
+	}
+
+	return &ABRPABNR, nil
 }
 
 func checkExceptionResponse(resp *http.Response, entityResp EntityResponse) error {
