@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+// EntityResponse holds methods to get related data out of
+// different response structs
+type EntityResponse interface {
+	HasUsageStatement() bool
+}
+
 // Exception describes an exception and provides an exception code.
 // More information about exceptions and there meaning can be found
 // here: https://api.gov.au/service/5b639f0f63f18432cd0e1a66/Exceptions#exception-codes-and-descriptions
