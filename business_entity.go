@@ -152,7 +152,15 @@ type BusinessEntityResponse struct {
 	BusinessEntity BusinessEntity `xml:"businessEntity201408"`
 }
 
+// HasUsageStatement will check if a BusinessEntityResponse has a usage statement
+func (ber *BusinessEntityResponse) HasUsageStatement() bool {
+	if ber.UsageStatement != "" {
+		return true
+	}
+	return false
+}
+
 // ABRPayloadBusinessResults is the PayLoad the API has sent to the client
 type ABRPayloadBusinessResults struct {
-	Response BusinessEntityResponse `xml:"response"`
+	BusinessEntityResponse BusinessEntityResponse `xml:"response"`
 }
