@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"reflect"
 	"strconv"
+	"time"
 )
 
 var (
@@ -26,7 +27,7 @@ var (
 // Also does a validity check on the provided ABN
 func (c *Client) SearchByABN(abn string, history bool) (*ABRPayloadBusinessResults, error) {
 	if ValidateABN(abn) {
-		return c.searchBy("SearchByABNv201408", abn, history)
+		return c.searchByNumber("SearchByABNv201408", abn, history)
 	}
 	return nil, fmt.Errorf("ABN provided is not valid")
 }
@@ -34,17 +35,17 @@ func (c *Client) SearchByABN(abn string, history bool) (*ABRPayloadBusinessResul
 // SearchByASIC will return a ABRPayload with search results for a specified ASIC or return an error
 func (c *Client) SearchByASIC(asic string, history bool) (*ABRPayloadBusinessResults, error) {
 	if ValidateACN(asic) {
-		return c.searchBy("SearchByASICv201408", asic, history)
+		return c.searchByNumber("SearchByASICv201408", asic, history)
 	}
 
 	return nil, fmt.Errorf("ASIC provided is not valid")
 }
 
-// searchBy will make a request to the ABN Lookup API and attempt to decode the response body
+// searchByNumber will make a request to the ABN Lookup API and attempt to decode the response body
 // into a ABRPayloadSearchResults struct, if the Response UsageStatement is not set then this
 // function will then try to decode the response body into a ABRPayloadException struct and
 // return an error.
-func (c *Client) searchBy(searchType string, query string, history bool) (*ABRPayloadBusinessResults, error) {
+func (c *Client) searchByNumber(searchType string, query string, history bool) (*ABRPayloadBusinessResults, error) {
 	// Add url values
 	// NOTE: the authentication GUID is added in NewRequest for you
 	v := url.Values{}
@@ -140,7 +141,102 @@ func (c *Client) SearchByABNStatus(asq ABNStatusQuery) (*ABRPayloadABNResults, e
 	v.Add("currentGSTRegistrationOnly", returnYorNString(asq.CurrentGSTRegistrationOnly))
 	v.Add("entityTypeCode", asq.EntityTypeCode)
 
-	req, err := c.NewRequest("SearchByABNStatus", v)
+	ABRPABNR, err := c.abnListSearch("SearchByABNStatus", v)
+	if err != nil {
+		return nil, err
+	}
+
+	return ABRPABNR, nil
+}
+
+// CharityQuery holds fields for a charity query
+type CharityQuery struct {
+	Postcode           string
+	StateCode          string
+	CharityTypeCode    string
+	ConcessionTypeCode string
+}
+
+// SearchByCharity allows you to search for ABN/s via a charity
+func (c *Client) SearchByCharity(cq CharityQuery) (*ABRPayloadABNResults, error) {
+	v := url.Values{}
+	v.Add("postcode", cq.Postcode)
+	v.Add("state", cq.StateCode)
+	v.Add("charityTypeCode", cq.CharityTypeCode)
+	v.Add("concessionTypeCode", cq.ConcessionTypeCode)
+
+	ABRPABNR, err := c.abnListSearch("SearchByCharity", v)
+	if err != nil {
+		return nil, err
+	}
+
+	return ABRPABNR, nil
+}
+
+// SearchByPostcode allows you to search for ABN/s via a specified postcode
+func (c *Client) SearchByPostcode(postcode string) (*ABRPayloadABNResults, error) {
+	v := url.Values{}
+	v.Add("postcode", postcode)
+
+	ABRPABNR, err := c.abnListSearch("SearchByCharity", v)
+	if err != nil {
+		return nil, err
+	}
+
+	return ABRPABNR, nil
+}
+
+// RegistrationEventQuery holds fields for a registration event query
+type RegistrationEventQuery struct {
+	Postcode       string
+	EntityTypeCode string
+	StateCode      string
+	Date           time.Time
+}
+
+// SearchByRegistrationEvent allows you to search for ABN/s via a registration event query
+func (c *Client) SearchByRegistrationEvent(req RegistrationEventQuery) (*ABRPayloadABNResults, error) {
+	v := url.Values{}
+	v.Add("postcode", req.Postcode)
+	v.Add("entityTypeCode", req.EntityTypeCode)
+	v.Add("state", req.StateCode)
+	v.Add("month", strconv.Itoa(int(req.Date.Month())))
+	v.Add("year", strconv.Itoa(int(req.Date.Year())))
+
+	ABRPABNR, err := c.abnListSearch("SearchByRegistrationEvent", v)
+	if err != nil {
+		return nil, err
+	}
+
+	return ABRPABNR, nil
+}
+
+// UpdateEventQuery holds fields for a update event query
+type UpdateEventQuery struct {
+	Postcode       string
+	EntityTypeCode string
+	StateCode      string
+	UpdateDate     time.Time
+}
+
+// SearchByUpdateEvent allows you to search for ABN/s via a update event query
+func (c *Client) SearchByUpdateEvent(ueq UpdateEventQuery) (*ABRPayloadABNResults, error) {
+	v := url.Values{}
+	v.Add("postcode", ueq.Postcode)
+	v.Add("entityTypeCode", ueq.EntityTypeCode)
+	v.Add("state", ueq.StateCode)
+	v.Add("updateDate", ueq.UpdateDate.Format("2006-01-02T15:04:05"))
+
+	ABRPABNR, err := c.abnListSearch("SearchByUpdateEvent", v)
+	if err != nil {
+		return nil, err
+	}
+
+	return ABRPABNR, nil
+}
+
+func (c *Client) abnListSearch(path string, v url.Values) (*ABRPayloadABNResults, error) {
+	req, err := c.NewRequest(path, v)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't create new request: %s", err.Error())
 	}
