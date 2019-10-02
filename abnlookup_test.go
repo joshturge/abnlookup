@@ -1,6 +1,10 @@
-package abnlookup
+package abnlookup_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/joshturge/abnlookup"
+)
 
 var (
 	validABNs = []string{
@@ -31,12 +35,12 @@ var (
 
 func TestValidateABN(t *testing.T) {
 	for _, validABN := range validABNs {
-		if !ValidateABN(validABN) {
+		if !abnlookup.ValidateABN(validABN) {
 			t.Error("valid ABN has been flagged as invalid")
 		}
 	}
 	for _, invalidABN := range invalidABNs {
-		if ValidateABN(invalidABN) {
+		if abnlookup.ValidateABN(invalidABN) {
 			t.Error("invalid ABN has been flagged as valid")
 		}
 	}
@@ -44,12 +48,12 @@ func TestValidateABN(t *testing.T) {
 
 func TestValidateACN(t *testing.T) {
 	for _, validACN := range validACNs {
-		if !ValidateACN(validACN) {
+		if !abnlookup.ValidateACN(validACN) {
 			t.Errorf("valid ACN: %s has been flagged as invalid", validACN)
 		}
 	}
 	for _, invalidACN := range invalidACNs {
-		if ValidateACN(invalidACN) {
+		if abnlookup.ValidateACN(invalidACN) {
 			t.Errorf("invalid ACN: %s has been flagged as valid", invalidACN)
 		}
 	}
