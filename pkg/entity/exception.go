@@ -1,14 +1,8 @@
-package abnlookup
+package entity
 
 import (
 	"fmt"
 )
-
-// EntityResponse holds methods to get related data out of
-// different response structs
-type EntityResponse interface {
-	HasUsageStatement() bool
-}
 
 // Exception describes an exception and provides an exception code.
 // More information about exceptions and there meaning can be found
