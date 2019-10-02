@@ -20,9 +20,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("ACN Number: %s\n", abnResults.BusinessEntityResponse.BusinessEntity.ASICNumber)
+	fmt.Printf("ACN Number: %s\n", abnResults.ASICNumber)
 
-	if abnlookup.ValidateACN(abnResults.BusinessEntityResponse.BusinessEntity.ASICNumber) {
+	if abnlookup.ValidateACN(abnResults.ASICNumber) {
 		fmt.Println("ACN is valid")
 	} else {
 		fmt.Println("ACN is not valid")
@@ -47,7 +47,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(personResults.PersonEntityResponse.SearchResults.PersonEntity[0].ABN.IdentiferValue)
+	fmt.Println(personResults[0].ABN.Value)
 
 	abnStatusQuery := abnlookup.ABNStatusQuery{
 		Postcode:                   "4159",
@@ -62,5 +62,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("ABNList result: %s\n", abnListResults.ABNEntityResponse.ABNResults.ABNList[0])
+	fmt.Printf("ABNList result: %s\n", abnListResults[0])
 }
