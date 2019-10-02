@@ -28,9 +28,9 @@ With the client created you can then use the search methods already made, or cre
 
 | Method | Unit Test |
 | --- | --- |
-| SearchByABN | No | 
-| SearchByASIC | No |
-| SearchByName | No |
+| SearchByABN | Yes | 
+| SearchByASIC | Yes |
+| SearchByName | Yes |
 | SearchByABNStatus | No |
 | SearchByCharity | No |
 | SearchByPostcode | No |
