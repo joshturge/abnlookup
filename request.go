@@ -126,7 +126,7 @@ func (c *Client) SearchByName(nq NameQuery) ([]*entity.Person, error) {
 		return nil, err
 	}
 
-	return ABRPPR.PersonEntityResponse.PersonResults.Person, nil
+	return ABRPPR.PersonEntityResponse.PersonResults.People, nil
 }
 
 // ABNStatusQuery holds fields for a ABNStatus query
