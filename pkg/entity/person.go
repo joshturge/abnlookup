@@ -1,16 +1,41 @@
 package entity
 
+import "encoding/xml"
+
+// PersonMainName holds fields on a persons main name and search score
+type PersonMainName struct {
+	Name                string `xml:"organisationName"`
+	Score               int    `xml:"score"`
+	IsCurrentIdentifier string `xml:"isCurrentIdentifier"`
+}
+
+// PersonBusinessOrganisation holds fields on a persons business name and search score
+type PersonBusinessOrganisation struct {
+	Name                string `xml:"organisationName"`
+	Score               int    `xml:"score"`
+	IsCurrentIdentifier string `xml:"isCurrentIdentifier"`
+}
+
+// PersonLegalName holds fields on a persons name and search score
+type PersonLegalName struct {
+	FullName            string `xml:"fullName"`
+	Score               int    `xml:"score,omitempty"`
+	IsCurrentIdentifier string `xml:"isCurrentIdentifier"`
+}
+
 // Person holds information about a person
 type Person struct {
 	ABN                         ABN                         `xml:"ABN"`
-	LegalName                   LegalName                   `xml:"legalName"`
+	LegalName                   PersonLegalName             `xml:"legalName"`
+	BusinessOrginisation        PersonBusinessOrganisation  `xml:"businessName"`
+	MainName                    PersonMainName              `xml:"mainName"`
 	MainBusinessPhysicalAddress MainBusinessPhysicalAddress `xml:"mainBusinessPhysicalAddress"`
 }
 
 // PersonResults holds information on how many records there are
 // and if it exceeds the maximum that was set
 type PersonResults struct {
-	Person []*Person `xml:"searchResultsRecord"`
+	People []*Person `xml:"searchResultsRecord"`
 }
 
 // PersonResultsResponse holds information about an API response
@@ -23,6 +48,7 @@ type PersonResultsResponse struct {
 
 // ABRPayloadPersonResults holds all the results for a person response
 type ABRPayloadPersonResults struct {
+	XMLName              xml.Name              `xml:"ABRPayloadSearchResults"`
 	PersonEntityResponse PersonResultsResponse `xml:"response"`
 }
 
