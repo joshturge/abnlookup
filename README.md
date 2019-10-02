@@ -15,18 +15,18 @@ All the following ABN Lookup endpoints have been implemented.
 - [SearchByUpdateEvent](https://abr.business.gov.au/abrxmlsearch/Forms/SearchByUpdateEvent.aspx)
 
 ## Usage
-To use the wrapper for the ABN Lookup API, you need to register for a GUID (more info [here](https://api.gov.au/service/5b639f0f63f18432cd0e1a66/Registration)). Once registered, you can create a new client within your program.
+To use this packages client, you need to register for a GUID (more info [here](https://api.gov.au/service/5b639f0f63f18432cd0e1a66/Registration)). Once registered, you can create a new client. The client handles all requests going to the API and enables people to create there own requests making this client very extensible.
 ```go
     client, err := abnlookup.NewClient("YOUR GUID")
 	if err != nil {
 		// Handle error...
 	}
 ```
-With the client created you can then use the search methods. Examples can be found in the [examples](https://github.com/joshturge/abnlookup/tree/master/example) directory.
+With the client created you can then use the search methods already made, or create your own. Examples can be found in the [examples](https://github.com/joshturge/abnlookup/tree/master/example) directory.
 
 ## Methods
 
-| Method | Unit Tested |
+| Method | Unit Test |
 | --- | --- |
 | SearchByABN | No | 
 | SearchByASIC | No |
