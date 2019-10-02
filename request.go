@@ -65,6 +65,7 @@ func (c *Client) searchByNumber(searchType string, query string, history bool) (
 	if err != nil {
 		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
 	}
+	defer resp.Body.Close()
 
 	if err = checkExceptionResponse(resp, &ABRPBR); err != nil {
 		return nil, err
@@ -119,6 +120,7 @@ func (c *Client) SearchByName(nq NameQuery) ([]*entity.Person, error) {
 	if err != nil {
 		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
 	}
+	defer resp.Body.Close()
 
 	if err = checkExceptionResponse(resp, &ABRPPR); err != nil {
 		return nil, err
@@ -248,6 +250,7 @@ func (c *Client) abnListSearch(path string, v url.Values) ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
 	}
+	defer resp.Body.Close()
 
 	if err = checkExceptionResponse(resp, &ABRPABNR); err != nil {
 		return nil, err
