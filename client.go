@@ -91,15 +91,15 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}
 
 	// Get a copy of the response body as I need to have resp.Body available
-	var body io.ReadWriter = new(bytes.Buffer)
-	if _, err = io.Copy(body, resp.Body); err != nil {
+	var body bytes.Buffer
+	if _, err = io.Copy(&body, resp.Body); err != nil {
 		return resp, fmt.Errorf("couldn't copy response body: %s", err)
 	}
 
-	resp.Body = ioutil.NopCloser(body)
+	resp.Body = ioutil.NopCloser(bytes.NewReader(body.Bytes()))
 
 	// Decode response body into struct
-	if err = xml.NewDecoder(body).Decode(v); err != nil {
+	if err = xml.NewDecoder(&body).Decode(v); err != nil {
 		return nil, fmt.Errorf("couldn't decode response body into struct: %s", err.Error())
 	}
 
