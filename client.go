@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -89,21 +90,13 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		return resp, fmt.Errorf("API response status was not 200: Got %d: %s: Response.Body: %s", resp.StatusCode, http.StatusText(resp.StatusCode), string(body))
 	}
 
-	// This is definently not ideal for big response bodies but the API
-	// responses I've seen so far are only 1-2KB max in size.
-	// A better option would be to use io.Copy() but I'm not too sure
-	// how I would implement it.
 	// Get a copy of the response body as I need to have resp.Body available
-	var bodyByte []byte
-	bodyByte, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("couldn't read from response body: %s", err.Error())
+	var body io.ReadWriter = new(bytes.Buffer)
+	if _, err = io.Copy(body, resp.Body); err != nil {
+		return resp, fmt.Errorf("couldn't copy response body: %s", err)
 	}
-	// Set resp.Body to a new ReadCloser with same response body
-	resp.Body = ioutil.NopCloser(bytes.NewBuffer(bodyByte))
 
-	// Create a Reader from bodyByte so it can be decoded
-	body := bytes.NewReader(bodyByte)
+	resp.Body = ioutil.NopCloser(body)
 
 	// Decode response body into struct
 	if err = xml.NewDecoder(body).Decode(v); err != nil {
