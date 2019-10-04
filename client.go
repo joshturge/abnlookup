@@ -96,6 +96,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		return resp, fmt.Errorf("couldn't copy response body: %s", err)
 	}
 
+	// Create a new bytes reader and add a closer
 	resp.Body = ioutil.NopCloser(bytes.NewReader(body.Bytes()))
 
 	// Decode response body into struct
