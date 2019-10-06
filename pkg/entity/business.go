@@ -104,7 +104,7 @@ type Business struct {
 	LastUpdatedDate                     xmlDate                                `xml:"recordLastUpdatedDate"`
 	ABN                                 []*ABN                                 `xml:"ABN"`
 	Status                              []*Status                              `xml:"entityStatus"`
-	ASICNumber                          string                                 `xml:"ASICNumber,omitempty"`
+	ACN                                 string                                 `xml:"ASICNumber,omitempty"`
 	Type                                Type                                   `xml:"entityType,omitempty"`
 	GoodsAndServicesTax                 []*GoodsAndServicesTax                 `xml:"goodsAndServicesTax,omitempty"`
 	DGREndorsement                      []*DGREndorsement                      `xml:"dgrEndorsement,omitempty"`
@@ -122,9 +122,7 @@ type Business struct {
 
 // BusinessResultResponse is what the API has sent back to the client
 type BusinessResultResponse struct {
-	UsageStatement          string `xml:"usageStatement"`
-	DateRegisterLastUpdated string `xml:"dateRegisterLastUpdated"`
-	DateTimeRetrieved       string `xml:"dateTimeRetrieved"`
+	UsageStatement string `xml:"usageStatement"`
 	// Needs to be updated when a new endpoint is released
 	Business Business `xml:"businessEntity201408"`
 }
