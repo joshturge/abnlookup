@@ -48,7 +48,7 @@ type LegalName struct {
 // MainBusinessPhysicalAddress holds information for a businesses main physical address
 type MainBusinessPhysicalAddress struct {
 	StateCode     string  `xml:"stateCode"`
-	Postcode      uint    `xml:"postcode"`
+	Postcode      string  `xml:"postcode"`
 	EffectiveFrom xmlDate `xml:"effectiveFrom"`
 	EffectiveTo   xmlDate `xml:"effectiveTo"`
 }
