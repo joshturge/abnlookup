@@ -31,14 +31,9 @@ With the client created you can then use the search methods already made, or cre
 | SearchByABN | Yes | 
 | SearchByASIC | Yes |
 | SearchByName | Yes |
-| SearchByABNStatus | No |
-| SearchByCharity | No |
-| SearchByPostcode | No |
-| SearchByRegistrationEvent | No |
-| SearchByUpdateEvent | No |
+| SearchByFilters | Yes |
 
 ## Todo
 - Add more methods for searching ✅
-- Add unit tests for methods
+- Add unit tests for methods ✅
 - Create a better naming convention for types ✅
-- Add more helper functions and methods
