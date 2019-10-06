@@ -12,7 +12,7 @@ var client *abnlookup.Client
 
 func TestClient(t *testing.T) {
 	var err error
-	client, err = abnlookup.NewClient(os.Getenv("AUTH_GUID"))
+	client, err = abnlookup.NewClient(os.Getenv("AUTH_GUID"), abnlookup.LogDebug)
 	if err != nil {
 		t.Error(err)
 	}
@@ -87,4 +87,26 @@ func TestSearchByName(t *testing.T) {
 			}
 		}
 	}
+}
+
+// This test will test the filterSearch Method which is used by all filter methods including the one below
+func TestSearchByABNStatus(t *testing.T) {
+	abnStatusQuery := abnlookup.ABNStatusQuery{
+		Postcode:                   "4156",
+		ActiveABNsOnly:             false,
+		CurrentGSTRegistrationOnly: false,
+		EntityTypeCode:             "PUB",
+	}
+
+	abnList, err := client.SearchByABNStatus(abnStatusQuery)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(abnList) == 0 {
+		t.Log("length of abn list is 0")
+		t.Fail()
+	}
+
+	t.Logf("abn list length %d", len(abnList))
 }
