@@ -8,19 +8,23 @@ import (
 )
 
 func main() {
-	client, err := abnlookup.NewClient(os.Getenv("AUTH_GUID"))
+	client, err := abnlookup.NewClient(os.Getenv("AUTH_GUID"), abnlookup.LogDebug)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	abnResults, err := client.SearchByABN("49 093 669 660", false)
+	abnResults, err := client.SearchByABN("49 093 669 660", true)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
 	fmt.Printf("ACN Number: %s\n", abnResults.ASICNumber)
+
+	for _, ABN := range abnResults.ABN {
+		fmt.Println(ABN.ReplacedFrom.String())
+	}
 
 	if abnlookup.ValidateACN(abnResults.ASICNumber) {
 		fmt.Println("ACN is valid")
