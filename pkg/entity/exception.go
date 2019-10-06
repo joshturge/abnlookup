@@ -20,10 +20,8 @@ func (e *Exception) Error() string {
 // ExceptionResponse is a response received from the API that has
 // an Exception tag
 type ExceptionResponse struct {
-	UsageStatement          string    `xml:"usageStatement"`
-	DateRegisterLastUpdated string    `xml:"dateRegisterLastUpdated"`
-	DateTimeRetrieved       string    `xml:"dateTimeRetrieved"`
-	Exception               Exception `xml:"exception"`
+	UsageStatement string    `xml:"usageStatement"`
+	Exception      Exception `xml:"exception"`
 }
 
 // ABRPayloadException holds a Request and an ExceptionResponse

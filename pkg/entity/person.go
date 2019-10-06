@@ -40,10 +40,8 @@ type PersonResults struct {
 
 // PersonResultsResponse holds information about an API response
 type PersonResultsResponse struct {
-	UsageStatement          string        `xml:"usageStatement"`
-	DateRegisterLastUpdated string        `xml:"dateRegisterLastUpdated"`
-	DateTimeRetrieved       string        `xml:"dateTimeRetrieved"`
-	PersonResults           PersonResults `xml:"searchResultsList"`
+	UsageStatement string        `xml:"usageStatement"`
+	PersonResults  PersonResults `xml:"searchResultsList"`
 }
 
 // ABRPayloadPersonResults holds all the results for a person response
