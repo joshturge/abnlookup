@@ -18,9 +18,11 @@ func ValidateABN(abn string) bool {
 	// Remove all non-integer characters from the ABN
 	abn = cleanNumericString(abn)
 
+	// If the first check digit is a 0 then it's not a valid ABN
 	if abn[:1] == "0" {
 		return false
 	}
+
 	// Subtract 1 from the first check digit of the abn
 	abnByte := []byte(abn)
 	abnByte[0]--
@@ -31,7 +33,7 @@ func ValidateABN(abn string) bool {
 	}
 
 	// If the weightedSum is a multiple of 89 then it's a valid ABN
-	return ((calcWeightingSum("ABN", abn) % 89) == 0)
+	return (calcWeightingSum("ABN", abn) % 89) == 0
 }
 
 // ValidateACN will check if an ACN is valid.
