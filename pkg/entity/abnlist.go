@@ -7,10 +7,8 @@ type ABNResults struct {
 
 // ABNResultsResponse holds a response with ABN results
 type ABNResultsResponse struct {
-	UsageStatement            string     `xml:"usageStatement"`
-	DateRegisteredLastUpdated string     `xml:"dateRegisteredLastUpdated"`
-	DateTimeRetrieved         string     `xml:"dateTimeRetrieved"`
-	ABNResults                ABNResults `xml:"abnList"`
+	UsageStatement string     `xml:"usageStatement"`
+	ABNResults     ABNResults `xml:"abnList"`
 }
 
 // ABRPayloadABNResults holds a response from the ABN Lookup API
