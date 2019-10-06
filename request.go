@@ -145,7 +145,7 @@ func (c *Client) SearchByABNStatus(asq ABNStatusQuery) ([]string, error) {
 	v.Add("currentGSTRegistrationOnly", returnYorNString(asq.CurrentGSTRegistrationOnly))
 	v.Add("entityTypeCode", asq.EntityTypeCode)
 
-	ABRPABNR, err := c.abnListSearch("SearchByABNStatus", v)
+	ABRPABNR, err := c.filterSearch("SearchByABNStatus", v)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func (c *Client) SearchByCharity(cq CharityQuery) ([]string, error) {
 	v.Add("charityTypeCode", cq.CharityTypeCode)
 	v.Add("concessionTypeCode", cq.ConcessionTypeCode)
 
-	ABRPABNR, err := c.abnListSearch("SearchByCharity", v)
+	ABRPABNR, err := c.filterSearch("SearchByCharity", v)
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +182,7 @@ func (c *Client) SearchByPostcode(postcode string) ([]string, error) {
 	v := url.Values{}
 	v.Add("postcode", postcode)
 
-	ABRPABNR, err := c.abnListSearch("SearchByCharity", v)
+	ABRPABNR, err := c.filterSearch("SearchByCharity", v)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +207,7 @@ func (c *Client) SearchByRegistrationEvent(req RegistrationEventQuery) ([]string
 	v.Add("month", strconv.Itoa(int(req.Date.Month())))
 	v.Add("year", strconv.Itoa(int(req.Date.Year())))
 
-	ABRPABNR, err := c.abnListSearch("SearchByRegistrationEvent", v)
+	ABRPABNR, err := c.filterSearch("SearchByRegistrationEvent", v)
 	if err != nil {
 		return nil, err
 	}
@@ -231,7 +231,7 @@ func (c *Client) SearchByUpdateEvent(ueq UpdateEventQuery) ([]string, error) {
 	v.Add("state", ueq.StateCode)
 	v.Add("updateDate", ueq.UpdateDate.Format("2006-01-02T15:04:05"))
 
-	ABRPABNR, err := c.abnListSearch("SearchByUpdateEvent", v)
+	ABRPABNR, err := c.filterSearch("SearchByUpdateEvent", v)
 	if err != nil {
 		return nil, err
 	}
@@ -239,7 +239,7 @@ func (c *Client) SearchByUpdateEvent(ueq UpdateEventQuery) ([]string, error) {
 	return ABRPABNR, nil
 }
 
-func (c *Client) abnListSearch(path string, v url.Values) ([]string, error) {
+func (c *Client) filterSearch(path string, v url.Values) ([]string, error) {
 	req, err := c.NewRequest(path, v)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't create new request: %s", err.Error())
