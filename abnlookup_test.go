@@ -36,12 +36,12 @@ var (
 func TestValidateABN(t *testing.T) {
 	for _, validABN := range validABNs {
 		if !abnlookup.ValidateABN(validABN) {
-			t.Error("valid ABN has been flagged as invalid")
+			t.Errorf("valid ABN: %s has been flagged as invalid", validABN)
 		}
 	}
 	for _, invalidABN := range invalidABNs {
 		if abnlookup.ValidateABN(invalidABN) {
-			t.Error("invalid ABN has been flagged as valid")
+			t.Errorf("invalid ABN: %s has been flagged as valid", invalidABN)
 		}
 	}
 }
