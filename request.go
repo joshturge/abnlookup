@@ -205,7 +205,7 @@ func (c *Client) SearchByRegistrationEvent(req RegistrationEventQuery) ([]string
 	v.Add("entityTypeCode", req.EntityTypeCode)
 	v.Add("state", req.StateCode)
 	v.Add("month", strconv.Itoa(int(req.Date.Month())))
-	v.Add("year", strconv.Itoa(int(req.Date.Year())))
+	v.Add("year", strconv.Itoa(req.Date.Year()))
 
 	ABRPABNR, err := c.filterSearch("SearchByRegistrationEvent", v)
 	if err != nil {
@@ -267,7 +267,7 @@ func checkExceptionResponse(resp *http.Response, entityResp entity.Response) err
 			return fmt.Errorf("couldn't decode response body into ABRPayloadException: %s", err)
 		}
 
-		return fmt.Errorf(ABRPException.ExceptionResponse.Exception.Error())
+		return ABRPException.ExceptionResponse.Exception.Error()
 	}
 
 	return nil
