@@ -2,7 +2,7 @@
 
 This wrapper attempts to provide a layer of abstraction from the ABN Lookup API. 
 
-All the ABN Lookup methods have been added although some have yet to be unit tested, check the table below for unit tested methods. This wrapper also provides functions that can validate both ABN and ACN numbers. These functions are exported and are used by [SearchByABN](https://github.com/joshturge/abnlookup/blob/c0bb6920aeed213819a4bf890b7449edd94df82b/request.go) and [SearchByACN](https://github.com/joshturge/abnlookup/blob/c0bb6920aeed213819a4bf890b7449edd94df82b/request.go) to validate before sending a request to the ABN Lookup API.
+All the ABN Lookup methods have been added although some have yet to be unit tested, check the table below for unit tested methods. This wrapper also provides functions that can validate both ABN and ACN numbers. These functions are exported and can be used independant of the package client. These functions are used by [SearchByABN](https://github.com/joshturge/abnlookup/blob/c0bb6920aeed213819a4bf890b7449edd94df82b/request.go) and [SearchByACN](https://github.com/joshturge/abnlookup/blob/c0bb6920aeed213819a4bf890b7449edd94df82b/request.go) to validate before sending a request to the ABN Lookup API.
 
 All the following ABN Lookup endpoints have been implemented.
 - [SearchByABNv201408](https://abr.business.gov.au/abrxmlsearch/Forms/SearchByABNv201408.aspx)
@@ -15,9 +15,9 @@ All the following ABN Lookup endpoints have been implemented.
 - [SearchByUpdateEvent](https://abr.business.gov.au/abrxmlsearch/Forms/SearchByUpdateEvent.aspx)
 
 ## Usage
-To use this packages client, you need to register for a GUID (more info [here](https://api.gov.au/service/5b639f0f63f18432cd0e1a66/Registration)). Once registered, you can create a new client. The client handles all requests going to the API and enables people to create there own requests making this client very extensible.
+To use the package client, you need to register for a GUID (more info [here](https://api.gov.au/service/5b639f0f63f18432cd0e1a66/Registration)). Once registered, you can create a new client. The client handles all requests going to the API and enables people to create there own requests making this client very extensible.
 ```go
-    client, err := abnlookup.NewClient("YOUR GUID")
+    client, err := abnlookup.NewClient("YOUR GUID", abnlookup.LogDiscard)
 	if err != nil {
 		// Handle error...
 	}
