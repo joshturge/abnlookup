@@ -56,7 +56,7 @@ func NewClient(guid string, logLevel int) (*Client, error) {
 }
 
 // log a message if debug logging is enabled for the client
-func (c *Client) log(format string, v ...interface{}) {
+func (c *Client) logf(format string, v ...interface{}) {
 	if c.logger.Flags() == LogDebug {
 		c.logger.Printf(format, v...)
 	}
@@ -64,7 +64,7 @@ func (c *Client) log(format string, v ...interface{}) {
 
 // SetTimeout will set a timeout for requests
 func (c *Client) SetTimeout(duration time.Duration) {
-	c.log("client timeout set to %s\n", duration.String())
+	c.logf("client timeout set to %s\n", duration.String())
 	c.httpClient.Timeout = duration
 }
 
@@ -78,7 +78,7 @@ func (c *Client) NewRequest(path string, urlVal url.Values) (*http.Request, erro
 	var url bytes.Buffer
 	fmt.Fprintf(&url, "%s%s?%s", c.BaseURL.String(), path, urlVal.Encode())
 
-	c.log("creating new request with url values: %s\n", urlVal.Encode())
+	c.logf("creating new request with url values: %s\n", urlVal.Encode())
 
 	// Create a new GET request, body is nil as the values needed for an API request are encoded within the url
 	req, err := http.NewRequest("GET", url.String(), nil)
@@ -101,7 +101,7 @@ func drainBody(b io.ReadCloser) (*bytes.Buffer, error) {
 
 // Do will execute a http request and decode a response body into a valid struct
 func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
-	c.log("%s %s\n", req.Method, req.URL.String())
+	c.logf("%s %s\n", req.Method, req.URL.String())
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -112,7 +112,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		return resp, fmt.Errorf("API response status was not 200: Got %d: %s, check resp.Body for more info", resp.StatusCode, http.StatusText(resp.StatusCode))
 	}
 
-	c.log("copying response body")
+	c.logf("copying response body")
 
 	// Get a copy of the response body
 	var body *bytes.Buffer
