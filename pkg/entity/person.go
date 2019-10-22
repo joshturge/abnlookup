@@ -6,21 +6,21 @@ import "encoding/xml"
 type PersonMainName struct {
 	Name                string `xml:"organisationName"`
 	Score               int    `xml:"score"`
-	IsCurrentIdentifier string `xml:"isCurrentIdentifier"`
+	IsCurrentIdentifier Bool   `xml:"isCurrentIdentifier"`
 }
 
 // PersonBusinessOrganisation holds fields on a persons business name and search score
 type PersonBusinessOrganisation struct {
 	Name                string `xml:"organisationName"`
 	Score               int    `xml:"score"`
-	IsCurrentIdentifier string `xml:"isCurrentIdentifier"`
+	IsCurrentIdentifier Bool   `xml:"isCurrentIdentifier"`
 }
 
 // PersonLegalName holds fields on a persons name and search score
 type PersonLegalName struct {
 	FullName            string `xml:"fullName"`
 	Score               int    `xml:"score,omitempty"`
-	IsCurrentIdentifier string `xml:"isCurrentIdentifier"`
+	IsCurrentIdentifier Bool   `xml:"isCurrentIdentifier"`
 }
 
 // Person holds information about a person

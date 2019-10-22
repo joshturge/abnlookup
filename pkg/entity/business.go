@@ -4,9 +4,9 @@ import "encoding/xml"
 
 // Status holds information on an Entities current status
 type Status struct {
-	Code          string  `xml:"entityStatusCode"`
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo"`
+	Code          string `xml:"entityStatusCode"`
+	EffectiveFrom Date   `xml:"effectiveFrom"`
+	EffectiveTo   Date   `xml:"effectiveTo"`
 }
 
 // Type holds information on an Entity
@@ -17,44 +17,44 @@ type Type struct {
 
 // GoodsAndServicesTax holds the effectiveness a GoodsAndServicesTax
 type GoodsAndServicesTax struct {
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo"`
+	EffectiveFrom Date `xml:"effectiveFrom"`
+	EffectiveTo   Date `xml:"effectiveTo"`
 }
 
 // DGREndorsement holds information about a DGREndoresment
 type DGREndorsement struct {
-	EndorsedFrom      xmlDate `xml:"endorsedFrom"`
-	EndorsedTo        xmlDate `xml:"endorsedTo"`
-	EntityEndorsement string  `xml:"entityEndorement"`
-	ItemNumber        string  `xml:"itemNumber"`
+	EndorsedFrom      Date   `xml:"endorsedFrom"`
+	EndorsedTo        Date   `xml:"endorsedTo"`
+	EntityEndorsement string `xml:"entityEndorement"`
+	ItemNumber        string `xml:"itemNumber"`
 }
 
 // MainName holds a main name of a business
 type MainName struct {
-	Name          string  `xml:"organisationName"`
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo,omitempty"`
+	Name          string `xml:"organisationName"`
+	EffectiveFrom Date   `xml:"effectiveFrom"`
+	EffectiveTo   Date   `xml:"effectiveTo,omitempty"`
 }
 
 // MainTradingName holds information about a businesses main trading name
 type MainTradingName struct {
-	Name          string  `xml:"organisationName"`
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo,omitempty"`
+	Name          string `xml:"organisationName"`
+	EffectiveFrom Date   `xml:"effectiveFrom"`
+	EffectiveTo   Date   `xml:"effectiveTo,omitempty"`
 }
 
 // Charity holds a information about a charity
 type Charity struct {
-	Description   string  `xml:"charityTypeDescription"`
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo"`
+	Description   string `xml:"charityTypeDescription"`
+	EffectiveFrom Date   `xml:"effectiveFrom"`
+	EffectiveTo   Date   `xml:"effectiveTo"`
 }
 
 // TaxConcessionCharityEndorsement holds information about an endoresment type
 type TaxConcessionCharityEndorsement struct {
-	Type          string  `xml:"endorsementType"`
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo"`
+	Type          string `xml:"endorsementType"`
+	EffectiveFrom Date   `xml:"effectiveFrom"`
+	EffectiveTo   Date   `xml:"effectiveTo"`
 }
 
 // PBIOrginisation holds information about a PBIName
@@ -66,42 +66,42 @@ type PBIOrginisation struct {
 // PublicBenevolentInstitutionEmployer holds information about a PBIName and the effectiveness date
 type PublicBenevolentInstitutionEmployer struct {
 	Orginisation  PBIOrginisation `xml:"pbiName"`
-	EffectiveFrom xmlDate         `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate         `xml:"effectiveTo"`
+	EffectiveFrom Date            `xml:"effectiveFrom"`
+	EffectiveTo   Date            `xml:"effectiveTo"`
 }
 
 // BusinessOrginisation holds information about a businesses name
 type BusinessOrginisation struct {
-	Name          string  `xml:"organisationName"`
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo"`
+	Name          string `xml:"organisationName"`
+	EffectiveFrom Date   `xml:"effectiveFrom"`
+	EffectiveTo   Date   `xml:"effectiveTo"`
 }
 
 // DGRFundOrginisation holds information about a DGRFund's name
 type DGRFundOrginisation struct {
 	Name               string `xml:"orginisationName"`
 	Score              uint   `xml:"score"`
-	IsCurrentIndicator string `xml:"isCurrentIndicator"`
+	IsCurrentIndicator Bool   `xml:"isCurrentIndicator"`
 }
 
 // DGRFund holds information about a DGRFund
 type DGRFund struct {
 	Orginisation DGRFundOrginisation `xml:"dgrFundName"`
-	EndorsedFrom xmlDate             `xml:"endorsedFrom"`
-	EndorsedTo   xmlDate             `xml:"endorsedTo"`
+	EndorsedFrom Date                `xml:"endorsedFrom"`
+	EndorsedTo   Date                `xml:"endorsedTo"`
 	ItemNumber   string              `xml:"itemNumber"`
 }
 
 // ACNCRegistration holds the status and effectiveness of a ACNCRegistration
 type ACNCRegistration struct {
-	Status        string  `xml:"status"`
-	EffectiveFrom xmlDate `xml:"effectiveFrom"`
-	EffectiveTo   xmlDate `xml:"effectiveTo"`
+	Status        string `xml:"status"`
+	EffectiveFrom Date   `xml:"effectiveFrom"`
+	EffectiveTo   Date   `xml:"effectiveTo"`
 }
 
 // Business holds all history records and information attached to a search query
 type Business struct {
-	LastUpdatedDate                     xmlDate                                `xml:"recordLastUpdatedDate"`
+	LastUpdatedDate                     Date                                   `xml:"recordLastUpdatedDate"`
 	ABN                                 []*ABN                                 `xml:"ABN"`
 	Status                              []*Status                              `xml:"entityStatus"`
 	ACN                                 string                                 `xml:"ASICNumber,omitempty"`
