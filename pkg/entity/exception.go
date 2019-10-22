@@ -13,8 +13,8 @@ type Exception struct {
 }
 
 // Error will return a formatted string with information about an API exception
-func (e *Exception) Error() string {
-	return fmt.Sprintf("exception code: %s description: %s", e.Code, e.Description)
+func (e *Exception) Error() error {
+	return fmt.Errorf("exception code: %s description: %s", e.Code, e.Description)
 }
 
 // ExceptionResponse is a response received from the API that has
