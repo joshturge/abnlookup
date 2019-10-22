@@ -32,8 +32,6 @@ func TestSearchByABN(t *testing.T) {
 	if business.ABN[0].Value == "" {
 		t.FailNow()
 	}
-
-	t.Logf("Current state code: %s", business.MainBusinessPhysicalAddress[0].StateCode)
 }
 
 func TestSearchByASIC(t *testing.T) {
@@ -50,8 +48,6 @@ func TestSearchByASIC(t *testing.T) {
 	if business.ABN[0].Value == "" {
 		t.FailNow()
 	}
-
-	t.Logf("Current state code: %s", business.MainBusinessPhysicalAddress[0].StateCode)
 }
 
 func TestSearchByName(t *testing.T) {
@@ -107,6 +103,4 @@ func TestSearchByABNStatus(t *testing.T) {
 		t.Log("length of abn list is 0")
 		t.Fail()
 	}
-
-	t.Logf("abn list length %d", len(abnList))
 }
