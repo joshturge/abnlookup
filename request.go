@@ -1,15 +1,11 @@
 package abnlookup
 
 import (
-	"encoding/xml"
 	"fmt"
-	"net/http"
 	"net/url"
 	"reflect"
 	"strconv"
 	"time"
-
-	"github.com/joshturge/abnlookup/pkg/entity"
 )
 
 var (
@@ -27,7 +23,7 @@ var (
 
 // SearchByABN will return a ABRPayload with search results for a specified ABN or will return an error
 // Also does a validity check on the provided ABN
-func (c *Client) SearchByABN(abn string, history bool) (*entity.Business, error) {
+func (c *Client) SearchByABN(abn string, history bool) (*Business, error) {
 	if ValidateABN(abn) {
 		return c.searchByNumber("SearchByABNv201408", abn, history)
 	}
@@ -35,7 +31,7 @@ func (c *Client) SearchByABN(abn string, history bool) (*entity.Business, error)
 }
 
 // SearchByASIC will return a ABRPayload with search results for a specified ASIC or return an error
-func (c *Client) SearchByASIC(asic string, history bool) (*entity.Business, error) {
+func (c *Client) SearchByASIC(asic string, history bool) (*Business, error) {
 	if ValidateACN(asic) {
 		return c.searchByNumber("SearchByASICv201408", asic, history)
 	}
@@ -44,10 +40,8 @@ func (c *Client) SearchByASIC(asic string, history bool) (*entity.Business, erro
 }
 
 // searchByNumber will make a request to the ABN Lookup API and attempt to decode the response body
-// into a ABRPayloadSearchResults struct, if the Response UsageStatement is not set then this
-// function will then try to decode the response body into a ABRPayloadException struct and
-// return an error.
-func (c *Client) searchByNumber(searchType string, query string, history bool) (*entity.Business, error) {
+// into a Payload struct
+func (c *Client) searchByNumber(searchType string, query string, history bool) (*Business, error) {
 	// Add url values
 	// NOTE: the authentication GUID is added in NewRequest for you
 	v := url.Values{}
@@ -59,24 +53,23 @@ func (c *Client) searchByNumber(searchType string, query string, history bool) (
 		return nil, fmt.Errorf("couldn't create new request: %s", err.Error())
 	}
 
-	// Do the request and decode the response body into an ABRPayloadBusinessResults struct
-	var ABRPBR entity.ABRPayloadBusinessResult
-	resp, err := c.Do(req, &ABRPBR)
+	// Do the request and decode the response body into a payload struct
+	var payload Payload
+	resp, err := c.Do(req, &payload)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	if err = checkExceptionResponse(resp, &ABRPBR); err != nil {
-		return nil, err
+	if payload.IsException() {
+		return nil, payload.Response.Exception.Error()
 	}
 
-	return &ABRPBR.BusinessResponse.Business, nil
+	return payload.Response.Business, nil
 }
 
 // NameQuery is a query that is used to search for an ABN by a persons name
 type NameQuery struct {
-	Name           string
 	StateCodes     []string
 	Postcode       string
 	LegalName      bool
@@ -89,9 +82,16 @@ type NameQuery struct {
 }
 
 // SearchByName allows you to lookup an ABN/s via a name
-func (c *Client) SearchByName(nq NameQuery) ([]*entity.Person, error) {
+func (c *Client) SearchByName(name string, nq *NameQuery) ([]*Person, error) {
 	v := url.Values{}
-	v.Add("name", nq.Name)
+	v.Add("name", name)
+
+	if len(nq.StateCodes) == 0 {
+		for _, stateCode := range stateCodes {
+			v.Add(stateCode, "Y")
+		}
+	}
+
 	for _, stateCode := range stateCodes {
 		if elementExists(nq.StateCodes, stateCode) {
 			v.Add(stateCode, "Y")
@@ -115,18 +115,18 @@ func (c *Client) SearchByName(nq NameQuery) ([]*entity.Person, error) {
 	}
 
 	// Do the request and decode the response body into an ABRPayloadBusinessResults struct
-	var ABRPPR entity.ABRPayloadPersonResults
-	resp, err := c.Do(req, &ABRPPR)
+	var payload Payload
+	resp, err := c.Do(req, &payload)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	if err = checkExceptionResponse(resp, &ABRPPR); err != nil {
-		return nil, err
+	if payload.IsException() {
+		return nil, payload.Response.Exception.Error()
 	}
 
-	return ABRPPR.PersonEntityResponse.PersonResults.People, nil
+	return payload.Response.PeopleResults.People, nil
 }
 
 // ABNStatusQuery holds fields for a ABNStatus query
@@ -138,19 +138,19 @@ type ABNStatusQuery struct {
 }
 
 // SearchByABNStatus allows you to search for ABN/s via ABN Status
-func (c *Client) SearchByABNStatus(asq ABNStatusQuery) ([]string, error) {
+func (c *Client) SearchByABNStatus(asq *ABNStatusQuery) ([]string, error) {
 	v := url.Values{}
 	v.Add("postcode", asq.Postcode)
 	v.Add("activeABNsOnly", returnYorNString(asq.ActiveABNsOnly))
 	v.Add("currentGSTRegistrationOnly", returnYorNString(asq.CurrentGSTRegistrationOnly))
 	v.Add("entityTypeCode", asq.EntityTypeCode)
 
-	ABRPABNR, err := c.filterSearch("SearchByABNStatus", v)
+	ABNList, err := c.filterSearch("SearchByABNStatus", v)
 	if err != nil {
 		return nil, err
 	}
 
-	return ABRPABNR, nil
+	return ABNList, nil
 }
 
 // CharityQuery holds fields for a charity query
@@ -162,19 +162,19 @@ type CharityQuery struct {
 }
 
 // SearchByCharity allows you to search for ABN/s via a charity
-func (c *Client) SearchByCharity(cq CharityQuery) ([]string, error) {
+func (c *Client) SearchByCharity(cq *CharityQuery) ([]string, error) {
 	v := url.Values{}
 	v.Add("postcode", cq.Postcode)
 	v.Add("state", cq.StateCode)
 	v.Add("charityTypeCode", cq.CharityTypeCode)
 	v.Add("concessionTypeCode", cq.ConcessionTypeCode)
 
-	ABRPABNR, err := c.filterSearch("SearchByCharity", v)
+	ABNList, err := c.filterSearch("SearchByCharity", v)
 	if err != nil {
 		return nil, err
 	}
 
-	return ABRPABNR, nil
+	return ABNList, nil
 }
 
 // SearchByPostcode allows you to search for ABN/s via a specified postcode
@@ -182,12 +182,12 @@ func (c *Client) SearchByPostcode(postcode string) ([]string, error) {
 	v := url.Values{}
 	v.Add("postcode", postcode)
 
-	ABRPABNR, err := c.filterSearch("SearchByCharity", v)
+	ABNList, err := c.filterSearch("SearchByCharity", v)
 	if err != nil {
 		return nil, err
 	}
 
-	return ABRPABNR, nil
+	return ABNList, nil
 }
 
 // RegistrationEventQuery holds fields for a registration event query
@@ -199,7 +199,7 @@ type RegistrationEventQuery struct {
 }
 
 // SearchByRegistrationEvent allows you to search for ABN/s via a registration event query
-func (c *Client) SearchByRegistrationEvent(req RegistrationEventQuery) ([]string, error) {
+func (c *Client) SearchByRegistrationEvent(req *RegistrationEventQuery) ([]string, error) {
 	v := url.Values{}
 	v.Add("postcode", req.Postcode)
 	v.Add("entityTypeCode", req.EntityTypeCode)
@@ -207,12 +207,12 @@ func (c *Client) SearchByRegistrationEvent(req RegistrationEventQuery) ([]string
 	v.Add("month", strconv.Itoa(int(req.Date.Month())))
 	v.Add("year", strconv.Itoa(req.Date.Year()))
 
-	ABRPABNR, err := c.filterSearch("SearchByRegistrationEvent", v)
+	ABNList, err := c.filterSearch("SearchByRegistrationEvent", v)
 	if err != nil {
 		return nil, err
 	}
 
-	return ABRPABNR, nil
+	return ABNList, nil
 }
 
 // UpdateEventQuery holds fields for a update event query
@@ -224,19 +224,19 @@ type UpdateEventQuery struct {
 }
 
 // SearchByUpdateEvent allows you to search for ABN/s via a update event query
-func (c *Client) SearchByUpdateEvent(ueq UpdateEventQuery) ([]string, error) {
+func (c *Client) SearchByUpdateEvent(ueq *UpdateEventQuery) ([]string, error) {
 	v := url.Values{}
 	v.Add("postcode", ueq.Postcode)
 	v.Add("entityTypeCode", ueq.EntityTypeCode)
 	v.Add("state", ueq.StateCode)
 	v.Add("updateDate", ueq.UpdateDate.Format("2006-01-02T15:04:05"))
 
-	ABRPABNR, err := c.filterSearch("SearchByUpdateEvent", v)
+	ABNList, err := c.filterSearch("SearchByUpdateEvent", v)
 	if err != nil {
 		return nil, err
 	}
 
-	return ABRPABNR, nil
+	return ABNList, nil
 }
 
 func (c *Client) filterSearch(path string, v url.Values) ([]string, error) {
@@ -245,32 +245,18 @@ func (c *Client) filterSearch(path string, v url.Values) ([]string, error) {
 		return nil, fmt.Errorf("couldn't create new request: %s", err.Error())
 	}
 
-	var ABRPABNR entity.ABRPayloadABNResults
-	resp, err := c.Do(req, &ABRPABNR)
+	var payload Payload
+	resp, err := c.Do(req, &payload)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't do request: %s", err.Error())
 	}
 	defer resp.Body.Close()
 
-	if err = checkExceptionResponse(resp, &ABRPABNR); err != nil {
-		return nil, err
+	if payload.IsException() {
+		return nil, payload.Response.Exception.Error()
 	}
 
-	return ABRPABNR.ABNEntityResponse.ABNResults.ABNList, nil
-}
-
-func checkExceptionResponse(resp *http.Response, entityResp entity.Response) error {
-	// If the usage statement isn't defined then there was probably an exception
-	if !entityResp.HasUsageStatement() {
-		var ABRPException entity.ABRPayloadException
-		if err := xml.NewDecoder(resp.Body).Decode(&ABRPException); err != nil {
-			return fmt.Errorf("couldn't decode response body into ABRPayloadException: %s", err)
-		}
-
-		return ABRPException.ExceptionResponse.Exception.Error()
-	}
-
-	return nil
+	return payload.Response.ABNlist.ABN, nil
 }
 
 func returnYorNString(b bool) string {

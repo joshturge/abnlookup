@@ -53,7 +53,6 @@ func TestSearchByASIC(t *testing.T) {
 func TestSearchByName(t *testing.T) {
 	time.Sleep(3 * time.Second)
 	nq := abnlookup.NameQuery{
-		Name:           "Glen",
 		Postcode:       "4156",
 		LegalName:      true,
 		TradingName:    true,
@@ -65,22 +64,26 @@ func TestSearchByName(t *testing.T) {
 		MaxResults:     5,
 	}
 
-	people, err := client.SearchByName(nq)
+	people, err := client.SearchByName("Glen", &nq)
 	if err != nil {
 		t.Error(err)
 	}
 
 	if len(people) == 0 {
+		t.Log("Length of people is 0")
 		t.FailNow()
 	}
 
 	for _, person := range people {
-		if person.LegalName.FullName == "" {
-			if person.BusinessOrginisation.Name == "" {
-				if person.MainName.Name == "" {
-					t.FailNow()
-				}
-			}
+		switch {
+		case person.LegalName != nil:
+			t.Logf("Person legal name: %s", person.LegalName.FullName)
+		case person.BusinessName != nil:
+			t.Logf("Person business name: %s", person.BusinessName.OrganisationName)
+		case person.MainName != nil:
+			t.Logf("Person main organisation name: %s", person.MainName.OrganisationName)
+		default:
+			t.FailNow()
 		}
 	}
 }
@@ -94,7 +97,7 @@ func TestSearchByABNStatus(t *testing.T) {
 		EntityTypeCode:             "PUB",
 	}
 
-	abnList, err := client.SearchByABNStatus(abnStatusQuery)
+	abnList, err := client.SearchByABNStatus(&abnStatusQuery)
 	if err != nil {
 		t.Error(err)
 	}
