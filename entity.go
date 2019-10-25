@@ -32,7 +32,7 @@ func (xb *Bool) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var v string
 	d.DecodeElement(&v, &start)
 
-	*xb = Bool(v == "Y" || v == "N")
+	*xb = Bool(v == "Y")
 
 	return nil
 }
@@ -181,7 +181,49 @@ func (b *Business) CurrentGST() *GoodsAndServicesTax {
 	return b.GoodsAndServicesTax[0]
 }
 
-// TODO: get current of every struct slice
+// CurrentDGR will get the current DGREndorsement
+func (b *Business) CurrentDGR() *DGREndorsement {
+	return b.DGREndorsement[0]
+}
+
+// CurrentLegalName will get the current LegalName
+func (b *Business) CurrentLegalName() *LegalName {
+	return b.LegalName[0]
+}
+
+// CurrentBusinessName will get the current BusinessName
+func (b *Business) CurrentBusinessName() *BusinessName {
+	switch {
+	case len(b.MainName) != 0:
+		return b.MainName[0]
+	case len(b.MainTradingName) != 0:
+		return b.MainTradingName[0]
+	case len(b.BusinessOrginisation) != 0:
+		return b.BusinessOrginisation[0]
+	default:
+		return nil
+	}
+}
+
+// CurrentBusinessAddress will get the current MainBusinessPhysicalAddress
+func (b *Business) CurrentBusinessAddress() *MainBusinessPhysicalAddress {
+	return b.MainBusinessPhysicalAddress[0]
+}
+
+// CurrentTCC will get the current TaxConcessionCharityEndorsement
+func (b *Business) CurrentTCC() *TaxConcessionCharityEndorsement {
+	return b.TaxConcessionCharityEndorsement[0]
+}
+
+// CurrentPBI will get the current PublicBenevolentInstitutionEmployer
+func (b *Business) CurrentPBI() *PublicBenevolentInstitutionEmployer {
+	return b.PublicBenevolentInstitutionEmployer[0]
+}
+
+// CurrentDGRFund will get the current DGRFund
+func (b *Business) CurrentDGRFund() *DGRFund {
+	return b.DGRFund[0]
+}
 
 // Exception describes an exception and provides an exception code.
 // More information about exceptions and there meaning can be found
